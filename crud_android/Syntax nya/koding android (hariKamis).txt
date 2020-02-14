@@ -1,0 +1,80 @@
+KODINGAN CRUD ANDROID HARI KAMIS:
+tulis di mainactivity nya:
+1.APP > MANIFEST 
+lalu ketik :
+<uses permission android:name="android.permision.INTERNET"/>
+-lalu hubungan 
+2.hubungin API
+java>di folder mainactivity bikin class baru > klik kanan > kasih nama > konfigurasi
+lalu ketik:
+>lalu ke cmd cari yang IPv4 Address. . . . . . . . . . . : 10.10.14.251
+public class konfigurasi{
+public static final String 
+-URL_TAMBAH="https://10.10.14.251/crud_android/tambahSiswa.php";
+public static final String 
+-URL_TAMPIL_SEMUA="https://10.10.14.251/crud_android/tampilSemuaSiswa.php";
+public static final String 
+-URL_TAMPIL="https://10.10.14.251/crud_android/tampilSiswa.php?nis=";
+public static final String 
+-URL_UPDATE="https://10.10.14.251/crud_android/updateSiswa.php";
+public static final String 
+-URL_HAPUS="https://10.10.14.251/crud_android/hapusSiswa.php?nis=";
+
+public static final String KEY_NIS = "nis";
+public static final String KEY_NAMA = "nama";
+public static final String KEY_ROMBEL = "rombel";
+public static final String KEY_RAYON = "rayon";
+
+//JSON TAGS
+public static final String TAG_JSON_ARRAY  = "result"; 
+public static final String TAG_NIS= "nis";
+public static final String TAG_NAMA= "nama";
+public static final String TAG_ROMBEL= "rombel";
+public static final String TAG_RAYON= "rayon";
+
+//NIS SISWA
+public static final String SISWA_NIS = "siswa_nis";
+
+}
+
+3.Lalu Bikin Class Lagi diberi nama RequestHandler
+public class RequestHandler{
+public String sendPostRequest(String requestURL,
+			HashRap<String, String> postDataPrams){
+URL url;
+
+StringBuilder sb = new StringBuilder();
+try{
+	url = new URL(requestURL);
+	HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+	conn.setReadTimeout(15000);
+	conn.setConnectionTimeout(15000);	
+	conn.setDoInput(true);
+	conn.setRequestMethod("POST");
+	conn.setDoOutput(true);
+
+	OutputStream os = conn.getOutputStream();
+	BufferedWriter writer = new BufferedWriter(
+		new.OutputStreamWriter(os, charsetName "UTF-8"));
+	writer.write(getPostDataString(postDataParams));
+
+	writer.flush();
+	writer.close();
+	os.close();
+	int responseCode = conn.getResponseCode();
+
+	if(responseCode == HttpURLConnection.HTTP_OK){
+		BufferedReader br = new BufferedReader(new InputStreamReader{
+		conn.getInputStream()
+	)};
+	sb = new StringBuilder();
+	String response;
+	while((response = bre.readLine()) != null){
+		sb.append(response);
+	  }
+	}
+    } catch (Exception e){
+	e.printStackTrace();
+}
+return sb.toString();
+}

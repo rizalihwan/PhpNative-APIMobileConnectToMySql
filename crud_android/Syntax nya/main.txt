@@ -1,0 +1,91 @@
+package com.example.crudandroidrpl1;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import java.util.HashMap;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+
+    private EditText editNis;
+    private EditText editNama;
+    private EditText editRombel;
+    private  EditText editRayon;
+
+    private Button btnTambah;
+    private Button btnLihat;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        editNis=(EditText) findViewById(R.id.txtnis);
+        editNama=(EditText) findViewById(R.id.txtnama);
+        editRombel=(EditText) findViewById(R.id.txtrombel);
+        editRayon=(EditText) findViewById(R.id.txtrayon);
+        btnTambah=(Button)findViewById(R.id.buttonTambah);
+        btnLihat=(Button) findViewById(R.id.buttonLihat);
+
+        btnTambah.setOnClickListener(this);
+        btnLihat.setOnClickListener(this);
+
+    }
+
+    private void addSiswa(){
+        final String nis =editNis.getText().toString().trim();
+        final String nama =editNama.getText().toString().trim();
+        final String rombel  =editRombel.getText().toString().trim();
+        final String rayon =editRayon.getText().toString().trim();
+
+        class AddSiswa extends AsyncTask<Void,Void,String>{
+            ProgressDialog loading;
+
+            @Override
+            protected void  onPreExecute(){
+                super.onPreExecute();
+                loading = ProgressDialog.show(MainActivity.this,
+                        "Menambahkan...",
+                        "Tunggu...",
+                        false,
+                        false);
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                loading.dismiss();
+                Toast.makeText(MainActivity.this,s,Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            protected String doInBackground(Void... v) {
+                HashMap<String,String> params = new HashMap<>();
+                params.put(konfigurasi.KEY_NIS,nis);
+                params.put(konfigurasi.KEY_NAMA,nama);
+                params.put(konfigurasi.KEY_ROMBEL,rombel);
+                params.put(konfigurasi.KEY_RAYON,rayon);
+
+
+                RequestHandler rh = new RequestHandler();
+                String res = rh.sendPostRequest(konfigurasi.URL_TAMBAH, params);
+                return res;
+            }
+        }
+
+        AddSiswa ae = new AddSiswa();
+        ae.execute();
+    }
+    @Override
+    public void onClick(View v) {
+        if (v == btnTambah) {
+            addSiswa();
+        }
+    }
+}

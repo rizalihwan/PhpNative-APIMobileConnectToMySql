@@ -1,0 +1,78 @@
+//home.php di dalam admin
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>SIM Absensi</title>
+	</head>
+	<body>
+		<h1 align="center">Sistem Absensi Versin 1.0</h1>
+		<br>
+		<p align="center'><strong>Created By</strong> : Cofee & Love</p>
+	</body>
+</html>
+
+//siwa.php didalam admin
+
+<?php
+include = "../config/database.php";
+
+$perintah = new oop();
+
+@$table = "tbl_siswa";
+@$query = "query_siswa";
+@$where = "nis = $_GET[id]";
+@$redirect = "?menu=siswa";
+@$tanggal = $_POST['thn'] . "-" . $_POST['bin'] . "-" . $_POST['tgl'];
+@$folder = "../foto";
+if(isset($_POST['simpan'])){
+	$foto = $_FILES['foto'];
+	$upload = $perintah->upload($foto, $folder);
+	$field = array('nis' => $_POST['nis'], 'nama' => $_POST['nama'], 'jk' => $_POST['jk'], 'id_rayon' => $_POST['rayon'],
+			'id_rombel' => $_POST['rombel'], 'foto' => $upload, 'tgl_lahir' => $tanggal);
+	$perintah->simpan($con, $table, $field, $redirect);
+}
+
+if (isset($_GET['hapus'])){
+	$perintah->hapus($con, $table, $where, $redirect);
+}
+
+if (isset($_GET['get'])){
+	$edit = $perintah->edit($query, $where);
+	if ($edit['jk'] == "L"){
+		$l = "checked";
+	}else{
+		$p = "checked";
+	}
+	$date = explode("-", $edit['tgl_lahir']);
+	$thn = $date[0];
+	$bln = $date[1];
+	$tgl = $date[2];
+}
+
+if (isset($_POST['ubah'])){
+	$foto = $_FILES['foto'];
+	$upload = $perintah->upload($foto);
+	if(empty($_FILES['foto']['name'])){
+		$field = array ('nis' => $_POST['nis'], 'nama' => $_POST['nama'], 'jk' => $_POST['jk'],
+				'id_rayon' => $_POST['rayon'], 'id_rombel' => $_POST['rombel'], 'tgl_lahir' => $tanggal);
+		$perintah->ubah($table, $field, $where, $redirect);
+	}else{
+		$field = array('nis' => $_POST['nis'], 'nama' => $_POST['nama'], 'jk' => $_POST['jk'],
+				'id_rayon' => $_POST['rayon'], 'id_rombel' => $_POST['rombel'], 'foto' => $upload, 'tgl_lahir' => $tanggal);
+		$perintah->ubah($table, $field, $where, $redirect);
+	}
+}
+?>
+
+		
+
+
+
+
+
+
+
+
+
